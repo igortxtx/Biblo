@@ -69,7 +69,6 @@
 
     let livros = JSON.parse(localStorage.getItem("livros")) || [];
 
-    // Renderizar os livros
     function renderizar() {
       lista.innerHTML = "";
       livros.forEach((livro, index) => {
@@ -100,13 +99,11 @@
       });
     }
 
-    // Salvar no localStorage
     function salvar() {
       localStorage.setItem("livros", JSON.stringify(livros));
       renderizar();
     }
 
-    // Adicionar livro
     btnAdicionar.addEventListener("click", () => {
       const titulo = tituloInput.value.trim();
       const autor = autorInput.value.trim();
