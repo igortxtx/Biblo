@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Minha Biblioteca</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 30px;
+      background: #f4f4f4;
+    }
+    h1 {
+      text-align: center;
+    }
+    .form {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+    input {
+      padding: 8px;
+    }
+    button {
+      padding: 8px 12px;
+      cursor: pointer;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+      max-width: 600px;
+      margin: auto;
+    }
+    li {
+      background: white;
+      padding: 10px;
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-radius: 5px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .info {
+      flex-grow: 1;
+    }
+    .lido {
+      text-decoration: line-through;
+      color: gray;
+    }
+  </style>
+</head>
+<body>
+  <h1>📚 Minha Biblioteca</h1>
+
+  <div class="form">
+    <input type="text" id="titulo" placeholder="Título do livro">
+    <input type="text" id="autor" placeholder="Autor do livro">
+    <button id="adicionar">Adicionar</button>
+  </div>
+
+  <ul id="listaLivros"></ul>
+
+  <script>
+    const lista = document.getElementById("listaLivros");
+    const tituloInput = document.getElementById("titulo");
+    const autorInput = document.getElementById("autor");
+    const btnAdicionar = document.getElementById("adicionar");
+
+    let livros = JSON.parse(localStorage.getItem("livros")) || [];
+
+    // Renderizar os livros
+    function renderizar() {
+      lista.innerHTML = "";
+      livros.forEach((livro, index) => {
+        const li = document.createElement("li");
+
+        const info = document.createElement("span");
+        info.className = "info" + (livro.lido ? " lido" : "");
+        info.textContent = `${livro.titulo} - ${livro.autor}`;
+
+        const btnLido = document.createElement("button");
+        btnLido.textContent = livro.lido ? "Marcar como não lido" : "Marcar como lido";
+        btnLido.onclick = () => {
+          livros[index].lido = !livros[index].lido;
+          salvar();
+        };
+
+        const btnRemover = document.createElement("button");
+        btnRemover.textContent = "Remover";
+        btnRemover.onclick = () => {
+          livros.splice(index, 1);
+          salvar();
+        };
+
+        li.appendChild(info);
+        li.appendChild(btnLido);
+        li.appendChild(btnRemover);
+        lista.appendChild(li);
+      });
+    }
+
+    // Salvar no localStorage
+    function salvar() {
+      localStorage.setItem("livros", JSON.stringify(livros));
+      renderizar();
+    }
+
+    // Adicionar livro
+    btnAdicionar.addEventListener("click", () => {
+      const titulo = tituloInput.value.trim();
+      const autor = autorInput.value.trim();
+
+      if (titulo && autor) {
+        livros.push({ titulo, autor, lido: false });
+        salvar();
+        tituloInput.value = "";
+        autorInput.value = "";
+      }
+    });
+
+    renderizar();
+  </script>
+</body>
+</html>
